@@ -290,18 +290,39 @@ export function resolveConfig(config, locales) {
 
 export default class Locale {
   constructor(config, { locales = defaultLocales, timezone } = {}) {
-    const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
+    const { id, firstDayOfWeek, masks, translations } = resolveConfig(
+      config,
+      locales,
+    );
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
     this.timezone = timezone || undefined;
-    this.dayNames = this.getDayNames('long');
-    this.dayNamesShort = this.getDayNames('short');
-    this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
-    this.dayNamesNarrow = this.getDayNames('narrow');
-    this.monthNames = this.getMonthNames('long');
-    this.monthNamesShort = this.getMonthNames('short');
+    this.dayNames =
+      translations !== undefined && translations.dayNames !== undefined
+        ? translations.dayNames
+        : this.getDayNames('long');
+    this.dayNamesShort =
+      translations !== undefined && translations.dayNamesShort !== undefined
+        ? translations.dayNamesShort
+        : this.getDayNames('short');
+    this.dayNamesShorter =
+      translations !== undefined && translations.dayNamesShorter !== undefined
+        ? translations.dayNamesShorter
+        : this.dayNamesShort.map(s => s.substring(0, 2));
+    this.dayNamesNarrow =
+      translations !== undefined && translations.dayNamesNarrow !== undefined
+        ? translations.dayNamesNarrow
+        : this.getDayNames('narrow');
+    this.monthNames =
+      translations !== undefined && translations.monthNames !== undefined
+        ? translations.monthNames
+        : this.getMonthNames('long');
+    this.monthNamesShort =
+      translations !== undefined && translations.monthNamesShort !== undefined
+        ? translations.monthNamesShort
+        : this.getMonthNames('short');
     this.amPm = ['am', 'pm'];
     this.monthData = {};
     // Bind methods
